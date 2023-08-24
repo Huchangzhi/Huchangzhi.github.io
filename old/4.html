@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        body {
+            background-image: url('4_1.jpeg');
+            background-size: cover;
+        }
+        
+        #player {
+            position: absolute;
+            bottom: 40px;
+            left: 50px;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+        }
+        
+        .obstacle {
+            position: absolute;
+            bottom: 30px;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <input type="password" id="password" placeholder="请输入密码">
+    <button onclick="checkPassword()">确定</button>
+
+    <div id="player"></div>
+    <div class="obstacle"></div>
+
+    <button onclick="jump()">跳跃</button>
+    <button onclick="goBack()">返回博客</button>
+
+    <script>
+        var passwordInput = document.getElementById("password");
+        var isJumping = false;
+
+        function checkPassword() {
+            var password = passwordInput.value;
+            if (password === "050303") {
+                startGame();
+            } else {
+                window.location.href = "https://huchangzhi.github.io";
+            }
+        }
+
+        function startGame() {
+            document.addEventListener("keyup", function (event) {
+                if (event.keyCode === 32) {
+                    jump();
+                }
+            });
+
+            setInterval(moveObstacle, 5);
+        }
+
+        function jump() {
+            if (!isJumping) {
+                isJumping = true;
+                var player = document.getElementById("player");
+                player.style.bottom = "120px";
+                setTimeout(function () {
+                    player.style.bottom = "30px";
+                    isJumping = false;
+                }, 650);
+            }
+        }
+
+        function moveObstacle() {
+            var obstacle = document.querySelector(".obstacle");
+            var obstacleRight = parseInt(window.getComputedStyle(obstacle).getPropertyValue("right"));
+            if (obstacleRight < window.innerWidth) {
+                obstacle.style.right = (obstacleRight + 1) + 'px';
+            } else {
+                obstacle.style.right = '0px';
+            }
+
+            checkCollision();
+        }
+
+        function checkCollision() {
+            var player = document.getElementById("player");
+            var obstacle = document.querySelector(".obstacle");
+            var playerRect = player.getBoundingClientRect();
+            var obstacleRect = obstacle.getBoundingClientRect();
+
+            if (!isJumping && playerRect.left < obstacleRect.right && playerRect.right > obstacleRect.left &&
+                playerRect.top < obstacleRect.bottom && playerRect.bottom > obstacleRect.top) {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            alert("游戏结束");
+            window.location.href = "index.html";
+        }
+
+        function goBack() {
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
