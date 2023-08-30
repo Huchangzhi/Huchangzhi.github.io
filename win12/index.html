@@ -57,7 +57,7 @@
 				fill: none;
 				stroke-width: 2px;
 				stroke-linecap: round;
-				animation: spin-infinite 2s linear 0s infinite normal none running;
+				animation: spin-infinite 2.5s linear 0s infinite normal none running;
 				transform-origin: 50% 50%;
 				transition: all .2s ease-in-out 0s;
 			}
@@ -522,8 +522,8 @@
 							<div class="content" onmousedown="widgetsMove(this.parentElement, event);" ontouchstart="widgetsMove(this.parentElement, event);">
 								<img class="img" />
 								<div class="text">
-									<p class="temperature">92℃</p>
-									<p class="detail">晴朗 体感温度 95℃</p>
+									<p class="temperature">--℃</p>
+									<p class="detail">-- 体感温度 --℃</p>
 								</div>
 							</div>
 						</div>
@@ -570,7 +570,7 @@
 				<p style="color: #7f7f7f;margin-right: 5px;margin-top: 2px;">注意: 新闻内容均不属实 </p>
 			</div>
 			<div class="content">
-				<div class="card" style="grid-column: 1/6;grid-row: 1/3;color: #fff;background: var(--bgul);background-position:-0px -278px;background-size: 100%;">
+				<div class="card" style="grid-column: 1/6;grid-row: 1/3;color: #fff;background: var(--bgul);background-position:0 -278px;background-size: 100%;">
 					<p class="tit" style="font-size: 20px;margin: 90px 0 0 30px;text-shadow: 0 0 8px #000;">Windows12 v6.0 发布</p>
 					<a class="a" style="margin: 5px 0 0 50px;font-size: 17px;color: #9dd0fb;text-shadow: 0 0 3px #000;" onclick="hide_widgets();
 					openapp('about');if($('.window.about').hasClass('min'))minwin('about');
@@ -639,7 +639,7 @@
 			</div>
 		</div>
 		<div class="chat">
-			<a class="a btn" onclick="copilot.init()">开始对话</a>
+			<a class="a btn button" onclick="copilot.init()">开始对话</a>
 			<p style="margin-top: 20px;">注意:目前后端发生了一点小问题，大概率不能使用，若能使用当然就运气好了。</p>
 		</div>
 		<div class="inputbox disable">
@@ -891,7 +891,7 @@
 		</div>
 		<div class="b" ondblclick="shownotice('feedback');" ontouchstart="shownotice('feedback');;">
 			<img src="icon/feedback.svg">
-			<p>发送反馈</p>
+			<p>反馈中心</p>
 		</div>
 		<span class="choose">
 		</span>
@@ -1635,8 +1635,12 @@
 			<div class="cnt update">
 				<h1 class="tit"><span></span>更新记录</h1>
 				<div style="margin-left: 20px;">
-					<details><summary><span>v7.3.1</span> 修复v7.3.0更新带来的bug</summary><p>
-						&emsp;&emsp;修复v7.3.0更新带来的bug</p>
+					<details><summary><span>v7.3.2</span> 细节更改</summary><p>
+						&emsp;&emsp;没有新增内容 (各位可以抽时间去看看readme.md，一些特殊情况</p>
+					</details>
+					<details><summary><span>v7.3.1</span> Bug修复与细节优化</summary><p>
+						&emsp;&emsp;-删除update.md中重复的字(更新来自 @ZigaoWang )<br />
+						&emsp;&emsp;-修复BIOS无法正确访问的问题(更新来自 @ludonghengsb )</p>
 					</details>
 					<details><summary><span>v7.3.0</span> 桌面小组件、Dock自动隐藏、计算器完善和Windows 更新</summary><p>
 						&emsp;&emsp;(更新来自 @User782Tec )<br />
