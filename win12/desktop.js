@@ -53,10 +53,10 @@ function addMenu() {
     }
 }
 var run_cmd = '';
-let nomax = { 'calc': 0 /* 其实，计算器是可以最大化的...*/, 'notepad-fonts': 0, 'camera-notice': 0, 'winver': 0, 'run': 0 , 'wsa':0};
-let nomin = { 'notepad-fonts': 0, 'camera-notice': 0, 'run': 0};
-var topmost=[];
-var sys_setting = [1,1,1,0,0,1];
+let nomax = { 'calc': 0 /* 其实，计算器是可以最大化的...*/, 'notepad-fonts': 0, 'camera-notice': 0, 'winver': 0, 'run': 0, 'wsa': 0 };
+let nomin = { 'notepad-fonts': 0, 'camera-notice': 0, 'run': 0 };
+var topmost = [];
+var sys_setting = [1, 1, 1, 0, 0, 1];
 var use_music = true;
 let cms = {
     'titbar': [
@@ -108,15 +108,15 @@ let cms = {
         ['<i class="bi bi-info-circle"></i> 关于 Win12 网页版', `$('#win-about>.about').addClass('show');$('#win-about>.update').removeClass('show');openapp('about');if($('.window.about').hasClass('min'))minwin('about');`],
         ['<i class="bi bi-brush"></i> 个性化', `openapp('setting');$('#win-setting > div.menu > list > a.enable.appearance')[0].click()`]
     ],
-    'desktop.icon':[
-        function (arg){
-            return ['<i class="bi bi-folder2-open"></i> 打开','openapp(`' + arg[0] + '`)']
+    'desktop.icon': [
+        function (arg) {
+            return ['<i class="bi bi-folder2-open"></i> 打开', 'openapp(`' + arg[0] + '`)']
         },
         function (arg) {
             if (arg[1] >= 0) {
                 return ['<i class="bi bi-trash3"></i> 删除', 'desktopItem.splice(' + (arg[1] - 1) + ', 1);saveDesktop();setIcon();addMenu();'];
             } else {
-                return ['<i class="bi bi-wrench-adjustable"></i> 属性', 'null'];
+                return 'null';
             }
         }
     ],
@@ -265,10 +265,10 @@ let cms = {
         }
     ]
 }
-window.onkeydown=function(event){
-    if(event.keyCode==116/*F5被按下(刷新)*/){
+window.onkeydown = function (event) {
+    if (event.keyCode == 116/*F5被按下(刷新)*/) {
         event.preventDefault();/*取消默认刷新行为*/
-        $('#desktop').css('opacity','0');setTimeout(()=>{$('#desktop').css('opacity','1');},100);setIcon();
+        $('#desktop').css('opacity', '0'); setTimeout(() => { $('#desktop').css('opacity', '1'); }, 100); setIcon();
     }
 }
 
@@ -615,7 +615,7 @@ let nts = {
         `,
         btn: [
             { type: 'main', text: '立即重启', js: 'location.href = `./reload.html`;' },
-            { type: 'detail', text: '稍后重启', js: 'closenotice();'}
+            { type: 'detail', text: '稍后重启', js: 'closenotice();' }
         ]
     }
 }
@@ -645,17 +645,20 @@ function runcmd(cmd) {
         run_cmd = cmd;
         openapp('terminal');
         return true;
-    }else if(cmd in apps){
+    }
+    else if (cmd in apps) {
         openapp(cmd);
         return true;
-    }else if(cmd.replace('.exe','') in apps){
-        openapp(cmd.replace('.exe',''))
+    }
+    else if (cmd.replace('.exe', '') in apps) {
+        openapp(cmd.replace('.exe', ''))
         return true;
-    }else if(cmd.includes("shutdown")){//关机指令
+    }
+    else if (cmd.includes("shutdown")) {//关机指令
         run_cmd = cmd
         var cmds = cmd.split(' ');
-        if(cmds.includes("shutdown")||cmds.includes("shutdown.exe")){ //帮助
-            if(cmds.length==1){
+        if (cmds.includes("shutdown") || cmds.includes("shutdown.exe")) { //帮助
+            if (cmds.length == 1) {
                 openapp('terminal');
                 $('#win-terminal').html(`
 <pre>
@@ -668,62 +671,65 @@ shutdown [-s] [-r] [-f] [-a] [-t time]
 
 其余不多做介绍了
 请按任意键继续.&nbsp;.&nbsp;.<input type="text" onkeydown="hidewin('terminal')"></input></pre>`); //Q：为什么文字这么多呢？A：shutdown的帮助本来就多，为了能显示空格，就把空格用&nbsp;代替了
-// 所以你是没事干吗？。。提示：github并不是以行数来计算贡献的哦   from @tjy-gitnub
+                // 所以你是没事干吗？。。提示：github并不是以行数来计算贡献的哦   from @tjy-gitnub
                 $('#win-terminal>pre>input').focus()
-            } else if (cmds.includes("-s") || cmds.includes("/s")) {//关机
-                if ((cmds.indexOf("-t")!=-1&&cmd.length/*判断是否-t后有其他参数*/>=cmds.indexOf("-t")+2/*先加一，获取当下标是从1开始的时候的下标索引；再加一，获取下一项。配合数组.length使用*/)||(cmds.indexOf("/t")!=-1&&cmd.length/*判断是否-t后有其他参数*/>=cmds.indexOf("/t")+2)){
+            }
+            else if (cmds.includes("-s") || cmds.includes("/s")) {//关机
+                if ((cmds.indexOf("-t") != -1 && cmd.length/*判断是否-t后有其他参数*/ >= cmds.indexOf("-t") + 2/*先加一，获取当下标是从1开始的时候的下标索引；再加一，获取下一项。配合数组.length使用*/) || (cmds.indexOf("/t") != -1 && cmd.length/*判断是否-t后有其他参数*/ >= cmds.indexOf("/t") + 2)) {
                     str = "";
-                    if (cmds.includes("-t")) {str = "-t";}
-                    if (cmds.includes("/t")) {str = "/t";}
-                    if(!isNaN(cmds[cmds.indexOf(str)+1]/*这里只加一是因为下标是从0开始的*/)){
-                        num = parseInt(cmds[cmds.indexOf(str)+1])
+                    if (cmds.includes("-t")) { str = "-t"; }
+                    if (cmds.includes("/t")) { str = "/t"; }
+                    if (!isNaN(cmds[cmds.indexOf(str) + 1]/*这里只加一是因为下标是从0开始的*/)) {
+                        num = parseInt(cmds[cmds.indexOf(str) + 1])
                         nts['shutdown'] = {
-                            cnt:  `
+                            cnt: `
                             <p class="tit">即将注销你的登录</p>
-                            <p>Windows 将在 ` + num / 60 + ` 分钟后关闭。</p>`,
+                            <p>Windows 将在 ` + calcTimeString(num) + ` 后关闭。</p>`, // 如果必须原生样式的，建议改为 num<60 ? 1 : Math.floor(num / 60) + ` 分钟后关闭。</p>`,
                             btn: [
                                 { type: 'main', text: '关闭', js: 'closenotice();' },
                             ]
                         };
-                        shutdown_task[shutdown_task.length] = setTimeout("window.location.href = './shutdown.html'",num * 1000);
-                        if(!(cmds.includes("/f")||cmds.includes("-f"))){
+                        shutdown_task[shutdown_task.length] = setTimeout("window.location.href = './shutdown.html'", num * 1000);
+                        if (!(cmds.includes("/f") || cmds.includes("-f"))) {
                             shownotice('shutdown');
                         }
                     }
                 }
-            } else if (cmds.includes("-r") || cmds.includes("/r")) {//重启
-                if ((cmds.indexOf("-t")!=-1&&cmd.length>=cmds.indexOf("-t")+2)||(cmds.indexOf("/t")!=-1&&cmd.length>=cmds.indexOf("/t")+2)){/*详见上面的注释*/
+            }
+            else if (cmds.includes("-r") || cmds.includes("/r")) {//重启
+                if ((cmds.indexOf("-t") != -1 && cmd.length >= cmds.indexOf("-t") + 2) || (cmds.indexOf("/t") != -1 && cmd.length >= cmds.indexOf("/t") + 2)) {/*详见上面的注释*/
                     str = "";
-                    if (cmds.includes("-t")) {str = "-t";}
-                    if (cmds.includes("/t")) {str = "/t";}
-                    if(!isNaN(cmds[cmds.indexOf(str)+1])){
-                        num = parseInt(cmds[cmds.indexOf(str)+1])
+                    if (cmds.includes("-t")) { str = "-t"; }
+                    if (cmds.includes("/t")) { str = "/t"; }
+                    if (!isNaN(cmds[cmds.indexOf(str) + 1])) {
+                        num = parseInt(cmds[cmds.indexOf(str) + 1])
                         nts['shutdown'] = {
-                            cnt:  `
+                            cnt: `
                             <p class="tit">即将注销你的登录</p>
-                            <p>Windows 将在 ` + num / 60 + ` 分钟后关闭。</p>`,
+                            <p>Windows 将在 ` + calcTimeString(num) + ` 后关闭。</p>`, // 如果必须原生样式的，建议改为 num<60 ? 1 : Math.floor(num / 60) + ` 分钟后关闭。</p>`,
                             btn: [
                                 { type: 'main', text: '关闭', js: 'closenotice();' },
                             ]
                         };
-                        shutdown_task[shutdown_task.length] = setTimeout("window.location.href = './reload.html'",num * 1000);
-                        if(!(cmds.includes("/f")||cmds.includes("-f"))){
+                        shutdown_task[shutdown_task.length] = setTimeout("window.location.href = './reload.html'", num * 1000);
+                        if (!(cmds.includes("/f") || cmds.includes("-f"))) {
                             shownotice('shutdown');
                         }
                     }
                 }
-            } else if (cmds.includes("-a") || cmds.includes("/a")) {//取消电源操作
-                if(shutdown_task.length>0){
-                    for(var i=0;i<shutdown_task.length;i++){
-                        if(shutdown_task[i]!=null){
-                            try{
+            }
+            else if (cmds.includes("-a") || cmds.includes("/a")) {//取消电源操作
+                if (shutdown_task.length > 0) {
+                    for (var i = 0; i < shutdown_task.length; i++) {
+                        if (shutdown_task[i] != null) {
+                            try {
                                 clearTimeout(shutdown_task[i]);
-                            }catch(err){console.log(err);}
+                            } catch (err) { console.log(err); }
                             shutdown_task[i] = null;
                         }
                     }
                     nts['shutdown'] = {
-                        cnt:  `
+                        cnt: `
                         <p class="tit">注销已取消</p>
                         <p>计划的关闭已取消。</p>`,
                         btn: [
@@ -847,7 +853,7 @@ let apps = {
             }, 300);
         },
         run: (cmd) => {
-            if(!runcmd(cmd)){
+            if (!runcmd(cmd)) {
                 if (cmd != '') {
                     try {
                         cmd = cmd.replace(/\/$/, '');
@@ -872,11 +878,11 @@ let apps = {
                         }
                         else {
                             nts['Can-not-open-file'] = {
-                                cnt: `<p class="tit">` + cmd +`</p>
+                                cnt: `<p class="tit">` + cmd + `</p>
                                 <p>Windows 找不到文件 '` + cmd + `'。请确定文件名是否正确后，再试一次。</p> `,
                                 btn: [
                                     { type: 'main', text: '确定', js: "closenotice();showwin('run');$('#win-run>.open>input').select();" },
-                                    { type: 'cancel', text: '在 Micrsoft Edge 中搜索', js: "closenotice();openapp(\'edge\');window.setTimeout(() => {apps.edge.newtab();apps.edge.goto('https://www.bing.com/search?q=" + encodeURIComponent(cmd) +"');}, 300);"}
+                                    { type: 'cancel', text: '在 Micrsoft Edge 中搜索', js: "closenotice();openapp(\'edge\');window.setTimeout(() => {apps.edge.newtab();apps.edge.goto('https://www.bing.com/search?q=" + encodeURIComponent(cmd) + "');}, 300);" }
                                 ]
                             }
                             shownotice('Can-not-open-file');
@@ -884,11 +890,11 @@ let apps = {
                     }
                     catch {
                         nts['Can-not-open-file'] = {
-                            cnt: `<p class="tit">` + cmd +`</p>
+                            cnt: `<p class="tit">` + cmd + `</p>
                             <p>Windows 找不到文件 '` + cmd + `'。请确定文件名是否正确后，再试一次。</p> `,
                             btn: [
                                 { type: 'main', text: '确定', js: "closenotice();showwin('run');$('#win-run>.open>input').select();" },
-                                { type: 'cancel', text: '在 Micrsoft Edge 中搜索', js: "closenotice();openapp(\'edge\');window.setTimeout(() => {apps.edge.newtab();apps.edge.goto('https://www.bing.com/search?q=" + encodeURIComponent(cmd) +"');}, 300);"}
+                                { type: 'cancel', text: '在 Micrsoft Edge 中搜索', js: "closenotice();openapp(\'edge\');window.setTimeout(() => {apps.edge.newtab();apps.edge.goto('https://www.bing.com/search?q=" + encodeURIComponent(cmd) + "');}, 300);" }
                             ]
                         }
                         shownotice('Can-not-open-file');
@@ -1088,7 +1094,7 @@ let apps = {
             $('#win-taskmgr>.main>.cnt.' + name).addClass('show');
             $('#win-taskmgr>.menu>list.focs>a.check').removeClass('check');
             $('#win-taskmgr>.menu>list.focs>a.' + name).addClass('check');
-            if(!(name=='processes'||name=='404')){
+            if (!(name == 'processes' || name == '404')) {
                 document.getElementById('tsk-search').style.display = 'none';
             } else {
                 document.getElementById('tsk-search').style.display = '';
@@ -1113,7 +1119,7 @@ let apps = {
                 cpusum = Number((cpusum + cpu).toFixed(1));
                 memorysum = Number((memorysum + memory).toFixed(1));
                 disksum = Number((disksum + disk).toFixed(1));
-                if(document.getElementById('tsk-search').value!=''&&document.getElementById('tsk-search').style.display==''&&(!elt.name.toLowerCase().includes(document.getElementById('tsk-search').value.toLowerCase()/* 搜索时转换成小写 */))){
+                if (document.getElementById('tsk-search').value != '' && document.getElementById('tsk-search').style.display == '' && (!elt.name.toLowerCase().includes(document.getElementById('tsk-search').value.toLowerCase()/* 搜索时转换成小写 */))) {
                     continue //搜索
                 }
                 processList.splice(processList.length, 0, {
@@ -1124,12 +1130,12 @@ let apps = {
                     memory: memory,
                     disk: disk
                 });
-                Search_length ++;
+                Search_length++;
             }
-            if(Search_length==0){
+            if (Search_length == 0) {
                 apps.taskmgr.page('404')
             } else {
-                if(document.getElementById('tsk-search').value!=''&&document.getElementById('tsk-search').style.display==''){
+                if (document.getElementById('tsk-search').value != '' && document.getElementById('tsk-search').style.display == '') {
                     apps.taskmgr.page('processes')
                 }
             }
@@ -1137,7 +1143,7 @@ let apps = {
             apps.taskmgr.memory = memorysum;
             apps.taskmgr.disk = disksum;
             apps.taskmgr.processList = processList;
-            
+
         },
         loadProcesses: (processList = apps.taskmgr.processList) => {
             const processContainer = $('#win-taskmgr>.main>.cnt.processes tbody.view')[0];
@@ -2190,23 +2196,23 @@ let apps = {
                 }, 200);
             });
         },
-        get_star:()=>{
+        get_star: () => {
             $('StarShow').html(`<loading><svg width="30px" height="30px" viewBox="0 0 16 16">
             <circle cx="8px" cy="8px" r="7px" style="stroke:#7f7f7f50;fill:none;stroke-width:3px;"></circle>
             <circle cx="8px" cy="8px" r="7px" style="stroke:#2983cc;stroke-width:3px;"></circle></svg></loading>`)
             const repoFullName = 'tjy-gitnub/win12';
             fetch(`https://api.github.com/repos/${repoFullName}`)
-              .then(response => response.json())
-              .then(data => {
-                setTimeout(() => {
-                    const starCount = data.stargazers_count;
-                    $('#StarShow').html('<div style="display: flex;"><p>&emsp;&emsp;Star 数量：' + starCount +' (实时数据)</p>&emsp;<a class="button" onclick="apps.about.get_star()"><i class="bi bi-arrow-clockwise"></i> 刷新</a></div>')
-                }, 200);
-              })
-              .catch(error => {
-                console.error('获取star数量时出错：', error);
-                $('#StarShow').html('<div style="display: flex;"><p>&emsp;&emsp;哎呀！出错了！</p>&emsp;<a class="button" onclick="apps.about.get_star()"><i class="bi bi-arrow-clockwise"></i> 重试</a></div>')
-              });
+                .then(response => response.json())
+                .then(data => {
+                    setTimeout(() => {
+                        const starCount = data.stargazers_count;
+                        $('#StarShow').html('<div style="display: flex;"><p>&emsp;&emsp;Star 数量：' + starCount + ' (实时数据)</p>&emsp;<a class="button" onclick="apps.about.get_star()"><i class="bi bi-arrow-clockwise"></i> 刷新</a></div>')
+                    }, 200);
+                })
+                .catch(error => {
+                    console.error('获取star数量时出错：', error);
+                    $('#StarShow').html('<div style="display: flex;"><p>&emsp;&emsp;哎呀！出错了！</p>&emsp;<a class="button" onclick="apps.about.get_star()"><i class="bi bi-arrow-clockwise"></i> 重试</a></div>')
+                });
         }
     },
     notepad: {
@@ -2463,7 +2469,7 @@ Microsoft Windows [版本 12.0.39035.7324]
             var newD = document.createElement('div');
             newD.innerText = `C:\\Windows\\System32> ${command}`;
             elt.appendChild(newD);
-            if(!runcmd(command)){
+            if (!runcmd(command)) {
                 var newD = document.createElement('div');
                 newD.innerText = `"${command}"不是内部或外部命令,也不是可运行程序
             或批处理文件`;
@@ -3724,7 +3730,7 @@ for (let i = 0; i < wins.length; i++) {
     const win = wins[i];
     const titbar = titbars[i];
     titbar.addEventListener('mousedown', (e) => {
-        if($('.taskmgr>.titbar>div>input').is(':focus')){
+        if ($('.taskmgr>.titbar>div>input').is(':focus')) {
             return
         }
         let x = window.getComputedStyle(win, null).getPropertyValue('left').split("px")[0];
@@ -3850,25 +3856,25 @@ function setIcon() {
         })
         addMenu();
     }
-    if(Array.isArray(JSON.parse(localStorage.getItem('topmost')))){
+    if (Array.isArray(JSON.parse(localStorage.getItem('topmost')))) {
         topmost = JSON.parse(localStorage.getItem('topmost'));
-        if(topmost.includes('taskmgr')){
+        if (topmost.includes('taskmgr')) {
             document.getElementById('tsk-setting-topmost').checked = true;
         }
     }
-    if(Array.isArray(JSON.parse(localStorage.getItem('sys_setting')))){
+    if (Array.isArray(JSON.parse(localStorage.getItem('sys_setting')))) {
         var sys_setting_back = JSON.parse(localStorage.getItem('sys_setting'));
-        if(/^(1|0)+$/.test(sys_setting_back.join(''))/* 只含有0和1 */){
+        if (/^(1|0)+$/.test(sys_setting_back.join(''))/* 只含有0和1 */) {
             sys_setting = sys_setting_back;
-            for(var i=0;i<sys_setting.length;i++){
-                document.getElementById('sys_setting_'+(i+1)).setAttribute("class", 'a checkbox' + (sys_setting[i]?' checked':'')); //设置class属性
-                if(i==5){
-                    use_music = sys_setting[i]?true:false;
+            for (var i = 0; i < sys_setting.length; i++) {
+                document.getElementById('sys_setting_' + (i + 1)).setAttribute("class", 'a checkbox' + (sys_setting[i] ? ' checked' : '')); //设置class属性
+                if (i == 5) {
+                    use_music = sys_setting[i] ? true : false;
                 }
             }
         }
     }
-    if(localStorage.getItem('root_class')){
+    if (localStorage.getItem('root_class')) {
         $(':root')[0].className = localStorage.getItem('root_class');
     }
 }
@@ -3951,7 +3957,7 @@ else {
 }
 
 // PWA 应用
-if (!location.href.match(/((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(?::(?:[0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))/)  && !(new URL(location.href)).searchParams.get('develop')) {
+if (!location.href.match(/((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(?::(?:[0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))/) && !(new URL(location.href)).searchParams.get('develop')) {
     $('#loginback').css('opacity', '1');
     $('#loginback').css('display', 'flex');
     shownotice('about');
@@ -3999,4 +4005,30 @@ if (!location.href.match(/((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d|[1-9]\d|
 }
 function sendToSw(msg) {
     navigator.serviceWorker.controller.postMessage(msg);
+}
+
+/**
+ * 将秒数换算为可读的时间格式
+ * @param {number} second 秒数
+ * @returns 将秒数格式化为  1 天 8 小时 43 分钟 26 秒类似的格式
+ */
+function calcTimeString(second) {
+    let timeStr = '';
+    const days = Math.floor(second / (24 * 60 * 60));
+    const hours = Math.floor(second % (24 * 60 * 60) / 3600);
+    const minutes = Math.floor(second % 3600 / 60);
+    const seconds = second % 60;
+    if (days > 0) {
+        timeStr += " " + days + " 天";
+    }
+    if (hours > 0) {
+        timeStr += " " + hours + " 小时";
+    }
+    if (minutes > 0) {
+        timeStr += " " + minutes + " 分钟";
+    }
+    if (seconds > 0) {
+        timeStr += " " + seconds + " 秒";
+    }
+    return timeStr === "" ? " 0 秒" : timeStr;
 }
