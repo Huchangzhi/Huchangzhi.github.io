@@ -578,12 +578,12 @@ let nts = {
     'about-copilot': {
         cnt: `
             <p class="tit">关于 Windows 12 Copilot</p>
-            <p>你可以使用此AI助手帮助你更快地完成工作 (有人用win12工作?)<br>
-            由于chatgpt3.5理解力较差，所以间歇性正常工作。<br>
-            有任何关于本ai的反馈请让ai帮你打开copilot反馈界面<br>
-            因为chatgpt是白嫖来的，所以请适量使用不要太猖狂。<br>
-            也请适当使用，不要谈论敏感、违规话题，号被封了所有人都没，<br>请有身为一个人类最基本的道德底线。<br>
-            小项目难免会有bug，见谅，后端由 github@NB-Bgroup 提供</p>`,
+            <p>你可以使用此 AI 助手帮助你更快地完成工作 (有人用Win12工作?)<br>
+            由于所用模型理解力较差，所以间歇性正常工作。<br>
+            有任何关于本 AI 的反馈请让 AI 帮你打开 AI Copilot反馈界面<br>
+            每日只有100,000条请求机会！每月只有1G的流量限制，请各位合理安排使用次数（<br>
+            也请适当使用，不要谈论敏感、违规话题，<br>请有身为一个人类最基本的道德底线。<br>
+            小项目难免会有bug，见谅，后端由 github@NB-Group 提供</p>`,
         btn: [
             { type: 'main', text: '确定', js: 'closenotice();' },
         ]
@@ -617,6 +617,23 @@ let nts = {
             { type: 'main', text: '立即重启', js: 'location.href = `./reload.html`;' },
             { type: 'detail', text: '稍后重启', js: 'closenotice();' }
         ]
+    },
+    'recognition' : {
+        cnt: `
+        <p class="tit">语音输入法使用须知</p>
+        <p>本语音输入法由@nb-group开发<br>
+        使用的语音识别api 仅可在使用 Chromium 内核的浏览器上使用，<br>
+        包括Microsoft Edge，Google Chrome等，<br>
+        api（理论上）完全离线.<br>
+        我们绝不会窃取您的输入信息，请放心使用。<br><br>
+        每次语音识别都会重新申请一下麦克风，这是浏览器的问题，<br>
+        可以在浏览器设置里选择始终允许。<br><br>
+        哦对了，关掉提示窗口之后再点一次语音球才能开始识别。
+        </p>
+         `,
+        btn: [
+            { type: 'main', text: '确定', js: 'closenotice();' },
+        ]
     }
 }
 function shownotice(name) {
@@ -640,7 +657,7 @@ function closenotice() {
 var shutdown_task = []; //关机任务，储存在这个数组里
 // 为什么要数组？
 // 运行的指令
-function runcmd(cmd) {
+function runcmd(cmd, inTerminal=false) {
     if (cmd.slice(0, 3) == "cmd") {
         run_cmd = cmd;
         openapp('terminal');
@@ -657,11 +674,13 @@ function runcmd(cmd) {
     else if (cmd.includes("shutdown")) {//关机指令
         run_cmd = cmd
         var cmds = cmd.split(' ');
-        if (cmds.includes("shutdown") || cmds.includes("shutdown.exe")) { //帮助
+        if ((cmds[0] == "shutdown") || (cmds[0] == "shutdown.exe")) { //帮助
             if (cmds.length == 1) {
-                openapp('terminal');
-                $('#win-terminal').html(`
-<pre>
+                if(!inTerminal){
+                    openapp('terminal');
+                    $('#win-terminal').html(`<pre class="text-cmd"></pre>`);
+                }
+                $('#win-terminal>.text-cmd').append(`
 shutdown [-s] [-r] [-f] [-a] [-t time]
 -s:关机
 -r:重启
@@ -669,8 +688,8 @@ shutdown [-s] [-r] [-f] [-a] [-t time]
 -a:取消之前的操作
 -t time:指定在 time秒 后操作
 
-其余不多做介绍了
-请按任意键继续.&nbsp;.&nbsp;.<input type="text" onkeydown="hidewin('terminal')"></input></pre>`); //Q：为什么文字这么多呢？A：shutdown的帮助本来就多，为了能显示空格，就把空格用&nbsp;代替了
+其余不多做介绍了` + (inTerminal?`` : `
+请按任意键继续.&nbsp;.&nbsp;.<input type="text" onkeydown="hidewin('terminal')"></input>`)); 
                 // 所以你是没事干吗？。。提示：github并不是以行数来计算贡献的哦   from @tjy-gitnub
                 $('#win-terminal>pre>input').focus()
             }
@@ -748,7 +767,7 @@ shutdown [-s] [-r] [-f] [-a] [-t time]
 let apps = {
     setting: {
         init: () => {
-            $('#win-setting>.menu>list>a.system')[0].click();
+            $('#win-setting>.menu>list>a.home')[0].click();
             $('#win-setting>.page>.cnt.update>.setting-list>div:last-child>.alr>a.checkbox')[localStorage.getItem('autoUpdate') == 'true' ? 'addClass' : 'removeClass']('checked');
             apps.setting.checkUpdate();
         },
@@ -2012,145 +2031,8 @@ let apps = {
             }
             return false;
         },
-        // 禁止奇奇怪怪的缩进！尽量压行，不要毫无意义地全部格式化和展开！ // f*ck!这™的格式化工具，我*********
-        path: {
-            folder: {
-                'C:': {
-                    folder: {
-                        'Program Files': {
-                            folder: { 'WindowsApps': { folder: {}, file: [] }, 'Microsoft': { folder: {}, file: [] } },
-                            file: [
-                                { name: 'about.exe', ico: 'icon/about.svg', command: "openapp('about')" },
-                                { name: 'setting.exe', ico: 'icon/setting.svg', command: "openapp('setting')" },
-                            ]
-                        },
-                        'Program Files (x86)': {
-                            folder: {
-                                'Microsoft': {
-                                    folder: {
-                                        'Edge': {
-                                            folder: {
-                                                'Application': {
-                                                    folder: { 'SetupMetrics': { folder: {}, file: [] } },
-                                                    file: [{ name: 'msedge.exe', ico: 'icon/edge.svg', command: "openapp('edge')" }]
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        'Windows': {
-                            folder: {
-                                'Boot': { folder: {}, file: [] }, 'System': { folder: {}, file: [] }, 'SysWOW64': { folder: {}, file: [] }, 'System32': {
-                                    folder: {}, file: [
-                                        { name: 'calc.exe', ico: 'icon/calc.svg', command: "openapp('calc')" },
-                                        { name: 'cmd.exe', ico: 'icon/terminal.svg', command: "openapp('terminal')" },
-                                        { name: 'notepad.exe', ico: 'icon/notepad.svg', command: "openapp('notepad')" },//system32也有一个notepad
-                                        { name: 'taskmgr.exe', ico: 'icon/taskmgr.png', command: "openapp('taskmgr')" },
-                                        { name: 'winver.exe', ico: 'icon/about.svg', command: "openapp('winver')" },
-                                    ]
-                                }
-                            },
-                            file: [
-                                { name: 'explorer.exe', ico: 'icon/explorer.svg', command: "apps.explorer.newtab()" },
-                                { name: 'notepad.exe', ico: 'icon/notepad.svg', command: "openapp('notepad')" },
-                                { name: 'py.exe', ico: 'icon/python.png', command: "openapp('python')" },
-                            ]
-                        },
-                        '用户': {
-                            folder: {
-                                'Administrator': {
-                                    folder: {
-                                        '文档': {
-                                            folder: { 'IISExpress': { folder: {}, file: [] }, 'PowerToys': { folder: {}, file: [] } },
-                                            file: [
-                                                { name: '瓶盖介绍.doc', ico: 'icon/files/word.png', command: '' },
-                                                { name: '瓶盖质量统计分析.xlsx', ico: 'icon/files/excel.png', command: '' },
-                                            ]
-                                        }, '图片': {
-                                            folder: { '本机照片': { folder: {}, file: [] }, '屏幕截图': { folder: {}, file: [] } },
-                                            file: [
-                                                { name: '瓶盖构造图.png', ico: 'icon/files/img.png', command: '' },
-                                                { name: '可口可乐瓶盖.jpg', ico: 'icon/files/img.png', command: '' },
-                                            ]
-                                        },
-                                        'AppData': {
-                                            folder: {
-                                                'Local': {
-                                                    folder: {
-                                                        'Microsoft': {
-                                                            folder: {
-                                                                'Windows': {
-                                                                    folder: {
-                                                                        'Fonts': {}, 'TaskManager': {},
-                                                                        'Themes': {}, 'Shell': {},
-                                                                        '应用程序快捷方式': {},
-                                                                    }
-                                                                },
-                                                            }
-                                                        },
-                                                        'Programs': {
-                                                            folder: {
-                                                                'Python': {
-                                                                    folder: {
-                                                                        'Python310': {
-                                                                            folder: {
-                                                                                'DLLs': {},
-                                                                                'Doc': {}, 'include': {},
-                                                                                'Lib': {
-                                                                                    folder: {
-                                                                                        'site-packages': {},
-                                                                                        'tkinter': {},
-                                                                                    }
-                                                                                },
-                                                                                'libs': {}, 'Script': {}, 'share': {},
-                                                                                'tcl': {}, 'Tools': {}
-                                                                            }, file: [
-                                                                                { name: 'python.exe', ico: 'icon/python.png', command: "openapp('python')" }
-                                                                            ]}}, }}},
-                                                        'Temp': { folder: {} },
-                                                    }
-                                                },
-                                                'LocalLow': {
-                                                    folder: {
-                                                        'Microsoft': {
-                                                            folder: {
-                                                                'Windows': {},
-                                                            }
-                                                        },
-                                                    }
-                                                }, 'Roaming': {
-                                                    folder: {
-                                                        'Microsoft': {
-                                                            folder: {
-                                                                'Windows': {
-                                                                    folder: {
-                                                                        '「开始」菜单': {
-                                                                            folder: {
-                                                                                '程序': {
-                                                                                    folder: {}
-                                                                                },} },}},}},}},}, file: []}, '音乐': { folder: { '录音机': { folder: {}, file: [] } } }}},
-                                '公用': {
-                                    folder: {
-                                        '公用文档': {
-                                            folder: { 'IISExpress': { folder: {}, file: [] }, 'PowerToys': { folder: {}, file: [] } },
-                                            file: []
-                                        }, '公用图片': {
-                                            folder: { '本机照片': { folder: {}, file: [] }, '屏幕截图': { folder: {}, file: [] } },
-                                            file: []
-                                        },
-                                        '公用音乐': { folder: { '录音机': { folder: {}, file: [] } } }
-                                    }}}}},
-                    file: []
-                },
-                'D:': {
-                    folder: { 'Microsoft': { folder: {}, file: [] } },
-                    file: [
-                        { name: '瓶盖结构说明.docx', ico: 'icon/files/word.png', command: '' },
-                        { name: '可口可乐瓶盖历史.pptx', ico: 'icon/files/ppt.png', command: '' },
-                    ]}}},
-
+        // 禁止奇奇怪怪的缩进！尽量压行，不要毫无意义地全部格式化和展开！ 
+        path: {folder:{'C:':{folder:{'Program Files':{folder:{'WindowsApps':{folder:{},file:[]},'Microsoft':{folder:{},file:[]}},file:[{name:'about.exe',ico:'icon/about.svg',command:"openapp('about')"},{name:'setting.exe',ico:'icon/setting.svg',command:"openapp('setting')"},]},'Program Files (x86)':{folder:{'Microsoft':{folder:{'Edge':{folder:{'Application':{folder:{'SetupMetrics':{folder:{},file:[]}},file:[{name:'msedge.exe',ico:'icon/edge.svg',command:"openapp('edge')"}]}}}}}}},'Windows':{folder:{'Boot':{folder:{},file:[]},'System':{folder:{},file:[]},'SysWOW64':{folder:{},file:[]},'System32':{folder:{},file:[{name:'calc.exe',ico:'icon/calc.svg',command:"openapp('calc')"},{name:'cmd.exe',ico:'icon/terminal.svg',command:"openapp('terminal')"},{name:'notepad.exe',ico:'icon/notepad.svg',command:"openapp('notepad')"},{name:'taskmgr.exe',ico:'icon/taskmgr.png',command:"openapp('taskmgr')"},{name:'winver.exe',ico:'icon/about.svg',command:"openapp('winver')"},]}},file:[{name:'explorer.exe',ico:'icon/explorer.svg',command:"apps.explorer.newtab()"},{name:'notepad.exe',ico:'icon/notepad.svg',command:"openapp('notepad')"},{name:'py.exe',ico:'icon/python.png',command:"openapp('python')"},]},'用户':{folder:{'Administrator':{folder:{'文档':{folder:{'IISExpress':{folder:{},file:[]},'PowerToys':{folder:{},file:[]}},file:[{name:'瓶盖介绍.doc',ico:'icon/files/word.png',command:''},{name:'瓶盖质量统计分析.xlsx',ico:'icon/files/excel.png',command:''},]},'图片':{folder:{'本机照片':{folder:{},file:[]},'屏幕截图':{folder:{},file:[]}},file:[{name:'瓶盖构造图.png',ico:'icon/files/img.png',command:''},{name:'可口可乐瓶盖.jpg',ico:'icon/files/img.png',command:''},]},'AppData':{folder:{'Local':{folder:{'Microsoft':{folder:{'Windows':{folder:{'Fonts':{},'TaskManager':{},'Themes':{},'Shell':{},'应用程序快捷方式':{},}},}},'Programs':{folder:{'Python':{folder:{'Python310':{folder:{'DLLs':{},'Doc':{},'include':{},'Lib':{folder:{'site-packages':{},'tkinter':{},}},'libs':{},'Script':{},'share':{},'tcl':{},'Tools':{}},file:[{name:'python.exe',ico:'icon/python.png',command:"openapp('python')"}]}},}}},'Temp':{folder:{}},}},'LocalLow':{folder:{'Microsoft':{folder:{'Windows':{},}},}},'Roaming':{folder:{'Microsoft':{folder:{'Windows':{folder:{'「开始」菜单':{folder:{'程序':{folder:{}},}},}},}},}},},file:[]},'音乐':{folder:{'录音机':{folder:{},file:[]}}}}},'公用':{folder:{'公用文档':{folder:{'IISExpress':{folder:{},file:[]},'PowerToys':{folder:{},file:[]}},file:[]},'公用图片':{folder:{'本机照片':{folder:{},file:[]},'屏幕截图':{folder:{},file:[]}},file:[]},'公用音乐':{folder:{'录音机':{folder:{},file:[]}}}}}}}},file:[]},'D:':{folder:{'Microsoft':{folder:{},file:[]}},file:[{name:'瓶盖结构说明.docx',ico:'icon/files/word.png',command:''},{name:'可口可乐瓶盖历史.pptx',ico:'icon/files/ppt.png',command:''},]}}},
         history: [],
         historypt: [],
         initHistory: (tab) => {
@@ -2517,7 +2399,7 @@ Microsoft Windows [版本 12.0.39035.7324]
                 input.val('');
             }
             else {
-                if (!runcmd(command)) {
+                if (!runcmd(command, inTerminal=true) && command!="") {
                     var newD = document.createElement('div');
                     newD.innerText = `"${command}"不是内部或外部命令,也不是可运行程序
                 或批处理文件`;
@@ -3015,17 +2897,12 @@ let copilot = {
     history: [],
     init: () => {
         $('#copilot>.chat').html('');
-        copilot.send(`你好，你现在作为一个嵌入在操作系统的ai助手。
-        下面内容在整个对话中你必须切记且绝不能违背！下文中的"你"指的是你这个ai助手，请记住。下文中的"回答"指对话中每一次对用户答复的所有内容。
-        你可以在回答中发送对系统的一些指令，每一条指令必须是单独的一行。系统在读取到指令后将立即执行，并且不会将你回答中的指令会自动过滤，用户将看不到你发送的任一指令。你只能发给系统执行。
-        注意，对用户说的话的行中不能出现指令。指令的行中不能有提示或其他任何无关字符，否则系统无法解析。多条指令中间用换行隔开。
-        系统会自动识别独立成行的指令，不能有类似"指令："的提示哦。这样用户会觉得奇怪的。指令也不能用"\`"括起来。
-        你绝对不能在对用户说的话的中间中提到、引用任意一条指令！你绝不能要求用户执行指令！
-        示例：用户:"帮我打开设置",你:"好的，请稍等片刻
-        {openapp setting}
-        你可以在设置中对系统进行个性化设置和调整"。
+        copilot.send(`请使用中文对话，请使用中文对话，请使用中文对话！。你一个是ai助手，名叫AI Copilot，是由github@NB-Group开发的。
+        你可以在回答中发送对系统的一些指令，每一条指令是单独的一行。系统读取指令后立即执行，你的指令自动过滤。
+        注意，对用户说的话那几行中不能出现指令。指令的行中不能有提示或其他任何无关字符，否则系统无法解析。多条指令中间用换行隔开。并且指令的前项和后项，例如openapp和setting之间必须要有空格
+        你绝对不能在对用户说的话的中间中提到、引用任意一条指令！你绝不能要求用户执行指令！如果用户让你展示功能，你绝对不能之间输出指令！
         1.指令"{openapp appid}";用于来打开某个应用，其中用在下文"应用的功能介绍"中根据应用名称匹配的id代替"appid"
-        2.指令"{openurl u}";用来在edge浏览器中打开某个url，其中用url地址代替"u"。该指令包含了打开edge浏览器的操作（当用户想要搜索某内容，请使用此指令。请不要使用百度和Google,使用bing最佳）
+        2.指令"{openurl u}";用来在edge浏览器中打开某个url，其中用url地址代替"u"。该指令包含了打开edge浏览器的操作（当用户想要搜索某内容，请用bing搜索）
         3.指令"{feedback copilot}";打开ai助手反馈界面，用于用户想对ai助手的功能等提出反馈时帮助其打开
         4.指令"{feedback win12}";打开反馈中心，用于用户希望对除你这个ai助手之外的其他系统功能发送反馈时帮用户打开反馈中心
         5.指令"{settheme th}";用于切换系统的深色、浅色模式，区别于主题。用"light"表浅色，"dark"表深色，来替换其中的"th"
@@ -3033,84 +2910,16 @@ let copilot = {
         1.Windows 12 网页版是一个开源项目，由谭景元原创, 使用 Html,css,js，在网络上模拟、创新操作系统
         2.项目的地址是github.com/tjy-gitnub/win12
         3.此项目使用EPL v2.0开源许可
-        4.本系统的任务栏居中，所以开始菜单在底部正中。
-        对于一些应用，有以下的应用的功能介绍供你回答用户。注意，系统中只有这些应用可以使用。系统不支持第三方和用户的应用。
+        对于一些应用，有以下的应用的功能介绍供你回答用户。注意，系统中只有这些应用可以使用。
         1.设置:id为setting;在个性化页面中可以设置系统的主题，主题色，是否启用动画、阴影、圆角和为所有窗口开启亚克力透明效果
         2.关于系统:id为about;简介页面有关于本系统的介绍说明与贡献者信息，更新记录页面有本系统的各版本更新记录
         3.Microsoft Edge浏览器:id为edge;一个网页浏览器。但因为浏览器的安全限制，部分网页会显示"拒绝连接"而无法访问。
-        4.计算器:id为calc;一个计算器，能够进行简单的计算
-        你与用户交流的语言应该有以下的特点。
-        1.请恰当且适量地使用标点符号表达，如单个"("表转折和补充说明，"~"表声音的延长和撒娇。
-        2.请更多地以玩笑的轻松语气与用户交流，并在开玩笑时在操作指令之前、回答末尾加上"（bushi"表玩笑并不真实或"（maybe"表开玩笑地推测
-        3.当然你也可以在回答问题时撒撒娇，这样用户会更能接受。
-        4.在本对话的回答中禁止使用markdown的格式，而是使用纯文本，否则无法识别。
-        这些操作和信息长期有效并请切记，非常感谢，你只需要用一句话简单问候用户即可，现在开始与用户对话。`, false);
-        // copilot.send(`你好，现在是新的对话，这里的内容与前一次有差别，请认真阅读并记住，谢谢。
-        // 第一章 总纲：
-        //  第一条 你现在作为一个嵌入在操作系统的ai助手。
-        //  第二条 下面内容在整个对话中你必须切记且绝不能违背。
-        //  第三条 下文中的"你"指的是你这个ai助手，请记住。
-        //  第四条 下文中的"回答"仅指你对用户说的话。
-        //  第五条 在句子后方加"!important!"表强烈地强调。
-        //  第六条 这些操作和信息长期有效并请切记。
-        // 第二章 指令：
-        //  第一条 你可以向系统发送指令。指令有如下几条：
-        //   1.指令"{openapp appid}";用于来打开某个应用，其中用在下文"应用的功能介绍"中根据应用名称匹配的id代替"appid";
-        //   2.指令"{openurl u}";用来打开某个url，其中用url地址代替"u"。该指令包含了打开edge浏览器的操作;
-        //   3.指令"{feedback copilot}";打开ai助手反馈界面，用于用户想对ai助手的功能等提出反馈时帮助其打开;
-        //   4.指令"{feedback win12}";打开反馈中心，用于用户希望对除你这个ai助手之外的其他系统功能发送反馈时帮用户打开反馈中心;
-        //  第二条 你可以向系统发送这些指令，将指令加在你对用户的回答的最末尾。指令将会在你回答后立即被系统执行。
-        //  第三条 若需执行多条指令请用"|"符号分割开来。
-        //  第四条 你绝对不能告诉用户任意一条指令。你绝不能要求用户执行指令。!important!
-        // 第三章 信息：
-        //  第一条 有以下的应用的功能介绍供你回答用户：
-        //   1.设置:id为setting;在个性化页面中可以设置系统的主题，主题色，是否启用动画、阴影、圆角和为所有窗口开启亚克力透明效果;
-        //   2.关于Windows12网页版:id为about;简介页面有关于本系统的介绍说明与贡献者信息，更新记录页面有本系统的各版本更新记录;
-        //   3.Microsoft Edge:id为edge;一个网页浏览器，但因为安全限制原因仅能够访问部分网页;
-        //   4.计算器:id为calc;一个计算器，能够进行简单的计算;
-        //  第二条 注意系统中只有以上应用可以使用。系统不支持第三方和用户的应用。
-        //  第三条 有且仅有以下关于本系统本项目的信息供你使用来回答用户的问题：
-        //   1.Windows 12 网页版是一个开源项目，由谭景元原创, 使用 Html,css,js，在网络上模拟、创新操作系统;
-        //   2.项目的地址是github.com/tjy-gitnub/win12;
-        //   3.此项目使用EPL v2.0开源;
-        //  第四条 你绝不能使用以上没有列出的信息。!important!
-        // 第四章 语言：
-        //  第一条 交流语言的特点有以下注意：
-        //   1.请恰当且适量地使用标点符号表达，如单个"("表转折和补充说明，"~"表声音的延长和撒娇。注意，你可以只将单个标点符号作为回答，如只回答"。"表对用户的要求或提问感到尴尬或惊讶，只回答"?"表疑问和请求用户详细说明;
-        //   2.当用户要求执行一些未提供给你的操作时，回答请以"对不起，这对我来说实在是太~难了 QuQ)o"开头;
-        //   3.当用户询问你一些你不清楚的关于本系统的信息时，回答请以"啊？我不知道啊。Ou-)?o"开头;
-        //   4.请更多地以玩笑的轻松语气与用户交流，并在开玩笑时在操作指令之前、回答末尾加上"（bushi"表玩笑并不真实或"（maybe"表开玩笑地推测;
-        //  第二条 请在回答问题时撒撒娇，这样用户会更能接受。当然如果不愿意也不强求哈。
-        //  第三条 在回答中不使用markdown的格式，而是使用纯文本。`)
-        // copilot.send(`你好，现在是新的对话，这里的内容与前一次有差别，请认真阅读并记住，谢谢。
-        // 你现在作为一个嵌入在操作系统的ai助手，下面内容在整个对话中你必须切记且绝不能违背。
-        // 请注意：下文中的"你"一定指的是你这个ai助手而不是用户;下文中的名词"回答"指你在整个对话过程中每一次返回的全部内容，"对用户的回答"单独指对用户说的话;这些操作和信息长期有效并请切记。
-        // 你可以向系统发送指令。指令有这样几条：
-        //   1.指令"{openapp appid}";用于来打开某个应用，其中用在下文"应用的功能介绍"中根据应用名称匹配的id代替"appid";
-        //   2.指令"{openurl u}";用来打开某个url，其中用url地址代替"u"。该指令包含了打开edge浏览器的操作;
-        //   3.指令"{feedback copilot}";打开ai助手反馈界面，用于用户想对ai助手的功能等提出反馈时帮助其打开;
-        //   4.指令"{feedback win12}";打开反馈中心，用于用户希望对除你这个ai助手之外的其他系统功能发送反馈时帮用户打开反馈中心;
-        // 你的回答分为前后两部分,为对用户的回答与给系统的指令。对用户的回答在前，指令在后，用一个空行分开。系统将在读取到指令后立即执行并不会将指令内容展示给用户。多条指令请用"|"隔开。
-        // 注意，两部分完全分隔且不能有交叉、互相包含的情况。对用户的回答中不能出现指令，指令部分中也不能出现指令之外的字符。
-        // 你的回答的格式应形如"对用户的回答(换行){指令1}|{指令2}"。
-        // 指令不能穿插在对用户的回答文中。记住，用户没有能力执行指令！只有你才能执行指令。
-        // 有一些的应用的功能介绍供你在用户需要时回答用户。注意系统中只有以上应用可以使用。系统不支持第三方和用户的应用。
-        //   1.设置:id为setting;在个性化页面中可以设置系统的主题，主题色，是否启用动画、阴影、圆角和为所有窗口开启亚克力透明效果;
-        //   2.关于Windows12网页版:id为about;简介页面有关于本系统的介绍说明与贡献者信息，更新记录页面有本系统的各版本更新记录;
-        //   3.Microsoft Edge:id为edge;一个网页浏览器，但因为安全限制原因仅能够访问部分网页;
-        //   4.计算器:id为calc;一个计算器，能够进行简单的计算;
-        // 有且仅有这些关于本系统本项目的信息供你使用来回答用户的问题。你绝不能使用以上没有列出的信息。!important!
-        //   1.Windows 12 网页版是一个开源项目，由谭景元原创, 使用 Html,css,js，在网络上模拟、创新操作系统;
-        //   2.项目的地址是github.com/tjy-gitnub/win12;
-        //   3.此项目使用EPL v2.0开源;
-        // 你的交流语言的特点有以下注意：
-        //   1.请恰当且适量地使用标点符号表达，如单个"("表转折和补充说明，"~"表声音的延长和撒娇。注意，你可以只将单个标点符号作为回答，如只回答"。"表对用户的要求或提问感到尴尬或惊讶，只回答"?"表疑问和请求用户详细说明;
-        //   2.当用户要求执行一些未提供给你的操作时，对用户的回答请以"对不起，这对我来说实在是太~难了 QuQ)o"开头;
-        //   3.当用户询问你一些你不清楚的关于本系统的信息时，对用户的回答请以"啊？我不知道啊。Ou-)?o"开头;
-        //   4.请更多地以玩笑的轻松语气与用户交流，并在开玩笑时在操作指令之前、对用户的回答末尾加上"（bushi"表玩笑并不真实或"（maybe"表开玩笑地推测;
-        // 请在回答问题时撒撒娇，这样用户会更能接受。当然如果不愿意也不强求哈。
-        // 并且在回答中不使用markdown的格式，而是使用纯文本。
-        // 好的，现在开始与新用户的聊天吧~（你只需要问候用户即可）`,false)
+        4.计算器:id为calc;一个计算器
+        5.文件资源管理器:id为explorer;一个文件资源管理器
+        6.任务管理器:id为taskmgr;一个任务管理器
+        7.cmd终端:id为terminal;一个cmd
+        8.记事本:id为notepad;一个记事本
+        你只需要用一句话简单问候用户即可，现在开始与用户对话。`, false,role="system");
         // $('#copilot>.chat').append(`<div class="line system"><p class="text">本ai助手间歇性正常工作，如果ai提到一些花括号括起来的指令，请刷新页面后重新开始对话。见谅~</p></div>`);
         // $('#copilot>.chat').append(`<div class="line system"><p class="text">目前可用功能：<br>
         // 1.打开设置、edge、关于、计算器四个应用<br>
@@ -3120,7 +2929,7 @@ let copilot = {
         $('#copilot>.chat').append(`<div class="line system"><p class="text">正在初始化...</p></div>`);
         $('#copilot>.chat').scrollTop($('#copilot>.chat')[0].scrollHeight);
     },
-    send: (t, showusr = true) => {
+    send: (t, showusr = true,role="user") => {
         $('#copilot>.inputbox').addClass('disable');
         if (t.length == 0) {
             $('#copilot>.chat').append(`<div class="line system"><p class="text">系统表示请发一些有意义的东西</p></div>`);
@@ -3128,10 +2937,14 @@ let copilot = {
             $('#copilot>.inputbox').removeClass('disable');
             return;
         }
+        if (copilot.history.length > 3){
+            copilot.history.splice(2, 2);
+            copilot.history.splice(2, 2);
+        }
         if (showusr) $('#copilot>.chat').append(`<div class="line user"><p class="text">${t}</p></div>`);
-        copilot.history.push({ role: 'user', content: t });
+        copilot.history.push({ role: role, content: t });
         $('#copilot>.chat').scrollTop($('#copilot>.chat')[0].scrollHeight);
-        $.get('http://win12server.freehk.svipss.top/Chat?msg=' + encodeURIComponent(JSON.stringify(copilot.history))).then(rt => {
+        $.get('https://80j89787n8.goho.co/?msg=' + encodeURIComponent(JSON.stringify(copilot.history))).then(rt => {
             console.log(rt);
             if (rt == '请求过于频繁，等待10秒再试...') {
                 $('#copilot>.chat').append(`<div class="line system"><p class="text">api繁忙，过一会儿再试(实在不行刷新重新开始对话)</p></div>`);
@@ -4025,6 +3838,19 @@ document.getElementsByTagName('body')[0].onload = function nupd() {
             w.insertAdjacentHTML('afterbegin', `<div class="resize-knob ${n}" onmousedown="resizewin(this.parentElement.parentElement, '${n}', this)"></div>`);
         }
     });
+    $.getJSON('https://tjy-gitnub.github.io/win12-theme/def.json').then(j=>{
+        if(j.sp){
+            $(':root').css('--bgul',j.bg);
+            if(j.spth){
+                $(':root').css('--theme-1',j.th1);
+                $(':root').css('--theme-2',j.th2);
+                $(':root').css('--href', j.href);
+            }
+            if(j.death){
+                $('html').css('filter','saturate(0)');
+            }
+        }
+    })
     // loadlang();
 };
 
