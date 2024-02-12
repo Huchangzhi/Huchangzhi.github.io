@@ -36,14 +36,12 @@ $('input,textarea,*[contenteditable=true]').on('contextmenu', (e) => {
 function addMenu() {
     var parentDiv = document.getElementById('desktop');
     var childDivs = parentDiv.getElementsByTagName('div');
-
-    for (var i = 0; i < childDivs.length; i++) {
+    for (let i = 0; i < childDivs.length; i++) {
         if (i <= 4) {//win12内置的5个图标不添加
             continue;
         }
-        var div = childDivs[i];
+        let div = childDivs[i];
         div.setAttribute('iconIndex', i - 5);
-        console.log(i - 5, div.getAttribute('appname'))
         div.addEventListener('contextmenu', (event) => {
             if (div.getAttribute('appname') != undefined) {
                 return showcm(event, 'desktop.icon', [div.getAttribute('appname'), div.getAttribute('iconIndex')]);
@@ -56,9 +54,15 @@ var run_cmd = '';
 let nomax = { 'calc': 0 /* 其实，计算器是可以最大化的...*/, 'notepad-fonts': 0, 'camera-notice': 0, 'winver': 0, 'run': 0, 'wsa': 0 };
 let nomin = { 'notepad-fonts': 0, 'camera-notice': 0, 'run': 0 };
 var topmost = [];
-var sys_setting = [1, 1, 1, 0, 0, 1];
+var sys_setting = [1, 1, 1, 0, 0, 1, 1];
 var use_music = true;
+var use_mic_voice = true;
 let cms = {
+    'save-bar':[
+      function (arg) {
+        return ['<i class="bi bi-window-x"></i> 移除', `removeEdgeSaveUrl('${arg}')`];
+      }
+    ],
     'titbar': [
         function (arg) {
             if (arg in nomax) {
@@ -114,7 +118,7 @@ let cms = {
         },
         function (arg) {
             if (arg[1] >= 0) {
-                return ['<i class="bi bi-trash3"></i> 删除', 'desktopItem.splice(' + (arg[1] - 1) + ', 1);saveDesktop();setIcon();addMenu();'];
+                return ['<i class="bi bi-trash3"></i> 删除', 'desktopItem.splice(' + (arg[1]) + ', 1);saveDesktop();setIcon();addMenu();'];
             } else {
                 return 'null';
             }
@@ -654,6 +658,21 @@ function closenotice() {
         $('#notice-back').removeClass('show');
     }, 200);
 }
+
+function closeVideo() {
+  var video = apps.camera.video
+  if (video) {
+    try {
+      var stream = video.srcObject;
+      var tracks = stream.getTracks();
+      tracks.forEach(function (track) {
+        track.stop();
+      });
+      video.srcObject = null;
+    } catch (error) {}
+  }
+}
+
 var shutdown_task = []; //关机任务，储存在这个数组里
 // 为什么要数组？
 // 运行的指令
@@ -2559,7 +2578,7 @@ Microsoft Windows [版本 12.0.39035.7324]
         },
         reload: () => {
             if (wifiStatus == false) {
-                $('#win-edge>iframe.show').attr('src', './disconnected' + (isDrak ? '_dark' : '') + '.html');
+                $('#win-edge>iframe.show').attr('src', './disconnected' + (isDark ? '_dark' : '') + '.html');
             }
             else {
                 $('#win-edge>iframe.show').attr('src', $('#win-edge>iframe.show').attr('src'));
@@ -2583,7 +2602,7 @@ Microsoft Windows [版本 12.0.39035.7324]
         goto: (u, clear = true) => {
             if (wifiStatus == false) {
                 m_tab.rename('edge', u);
-                $('#win-edge>iframe.show').attr('src', './disconnected' + (isDrak ? '_dark' : '') + '.html');
+                $('#win-edge>iframe.show').attr('src', './disconnected' + (isDark ? '_dark' : '') + '.html');
                 $('#win-edge>.tool>input.url').val(u);
             }
             else {
@@ -2700,7 +2719,7 @@ let widgets = {
         remove: (arg) => {
             $(`.wg.${arg}.menu,.wg.${arg}.toolbar,.wg.${arg}.desktop`).remove();
             widgets[arg].remove();
-        },
+        }, 
         addToToolbar: (arg) => {
             widgets.widgets.remove(arg);
             if ($('.wg.toolbar.' + arg).length != 0) {
@@ -2891,7 +2910,7 @@ function widgetsMove(elt, e) {
 }
 function decodeHtml(s) {
     $('#translater').text(s);
-    return $('#translater').html().replace('\n', '<br>').replace(' ', '&nbsp;');
+    return $('#translater').html().replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
 }
 let copilot = {
     history: [],
@@ -2900,17 +2919,17 @@ let copilot = {
         copilot.send(`请使用中文对话，请使用中文对话，请使用中文对话！。你一个是ai助手，名叫AI Copilot，是由github@NB-Group开发的。
         你可以在回答中发送对系统的一些指令，每一条指令是单独的一行。系统读取指令后立即执行，你的指令自动过滤。
         注意，对用户说的话那几行中不能出现指令。指令的行中不能有提示或其他任何无关字符，否则系统无法解析。多条指令中间用换行隔开。并且指令的前项和后项，例如openapp和setting之间必须要有空格
-        你绝对不能在对用户说的话的中间中提到、引用任意一条指令！你绝不能要求用户执行指令！如果用户让你展示功能，你绝对不能之间输出指令！
+        你绝对不能在对用户说的话的中间中提到、引用任意一条指令！你绝不能要求用户执行指令！如果用户让你展示功能，你绝对不能直接输出指令！
         1.指令"{openapp appid}";用于来打开某个应用，其中用在下文"应用的功能介绍"中根据应用名称匹配的id代替"appid"
         2.指令"{openurl u}";用来在edge浏览器中打开某个url，其中用url地址代替"u"。该指令包含了打开edge浏览器的操作（当用户想要搜索某内容，请用bing搜索）
         3.指令"{feedback copilot}";打开ai助手反馈界面，用于用户想对ai助手的功能等提出反馈时帮助其打开
         4.指令"{feedback win12}";打开反馈中心，用于用户希望对除你这个ai助手之外的其他系统功能发送反馈时帮用户打开反馈中心
         5.指令"{settheme th}";用于切换系统的深色、浅色模式，区别于主题。用"light"表浅色，"dark"表深色，来替换其中的"th"
-        有且仅有以下信息供你使用来回答用户的问题。绝不能使用下面没有列出的信息。
+        仅有以下信息供你使用来回答用户的问题。
         1.Windows 12 网页版是一个开源项目，由谭景元原创, 使用 Html,css,js，在网络上模拟、创新操作系统
         2.项目的地址是github.com/tjy-gitnub/win12
         3.此项目使用EPL v2.0开源许可
-        对于一些应用，有以下的应用的功能介绍供你回答用户。注意，系统中只有这些应用可以使用。
+        有以下的应用供你回答用户。只有这些应用可以使用。
         1.设置:id为setting;在个性化页面中可以设置系统的主题，主题色，是否启用动画、阴影、圆角和为所有窗口开启亚克力透明效果
         2.关于系统:id为about;简介页面有关于本系统的介绍说明与贡献者信息，更新记录页面有本系统的各版本更新记录
         3.Microsoft Edge浏览器:id为edge;一个网页浏览器。但因为浏览器的安全限制，部分网页会显示"拒绝连接"而无法访问。
@@ -2937,14 +2956,18 @@ let copilot = {
             $('#copilot>.inputbox').removeClass('disable');
             return;
         }
-        if (copilot.history.length > 3){
+        if (copilot.history.length > 3){ // 万年代码，千万不要改
             copilot.history.splice(2, 2);
             copilot.history.splice(2, 2);
         }
         if (showusr) $('#copilot>.chat').append(`<div class="line user"><p class="text">${t}</p></div>`);
         copilot.history.push({ role: role, content: t });
         $('#copilot>.chat').scrollTop($('#copilot>.chat')[0].scrollHeight);
-        $.get('https://80j89787n8.goho.co/?msg=' + encodeURIComponent(JSON.stringify(copilot.history))).then(rt => {
+        $.post({
+            url: 'https://nbgroup.pythonanywhere.com/',
+            contentType: 'application/json',
+            data: JSON.stringify({ msg: copilot.history }),
+        }).then(rt => {
             console.log(rt);
             if (rt == '请求过于频繁，等待10秒再试...') {
                 $('#copilot>.chat').append(`<div class="line system"><p class="text">api繁忙，过一会儿再试(实在不行刷新重新开始对话)</p></div>`);
@@ -3063,10 +3086,7 @@ function openapp(name) {
     $('.window.' + name).addClass('load');
     showwin(name);
     $('#taskbar').attr('count', Number($('#taskbar').attr('count')) + 1);
-    if (name in icon)
-        $('#taskbar').append(`<a class="${name}" onclick="taskbarclick(\'${name}\')" win12_title="${$(`.window.${name}>.titbar>p`).text()}" onmouseenter="showdescp(event)" onmouseleave="hidedescp(event)" oncontextmenu="return showcm(event, 'taskbar', '${name}')"><img src="icon/${icon[name]}"></a>`);
-    else
-        $('#taskbar').append(`<a class="${name}" onclick="taskbarclick(\'${name}\')" win12_title="${$(`.window.${name}>.titbar>p`).text()}" onmouseenter="showdescp(event)" onmouseleave="hidedescp(event)"><img src="icon/${name}.svg"></a>`);
+    $('#taskbar').append(`<a class="${name}" onclick="taskbarclick(\'${name}\')" win12_title="${$(`.window.${name}>.titbar>p`).text()}" onmouseenter="showdescp(event)" onmouseleave="hidedescp(event)" oncontextmenu="return showcm(event, 'taskbar', '${name}')"><img src="icon/${icon[name] || (name + '.svg')}"></a>`);
     if ($('#taskbar').attr('count') == '1') {
         $('#taskbar').css('display', 'flex');
     }
@@ -3118,6 +3138,10 @@ function hidewin(name, arg = 'window') {
     $('.window.' + name).removeClass('notrans');
     $('.window.' + name).removeClass('max');
     $('.window.' + name).removeClass('show');
+    if (name == 'camera') {
+      // 相机关闭后统一清理 tracks
+      closeVideo()
+    }
     if (arg == 'window') {
         $('#taskbar').attr('count', Number($('#taskbar').attr('count')) - 1)
         $('#taskbar>.' + name).remove();
@@ -3151,6 +3175,9 @@ function hidewin(name, arg = 'window') {
     else {
         $('#dock-box').removeClass('hide')
     }
+}
+function removeEdgeSaveUrl(classname) {
+  $('.' + classname).remove()
 }
 function maxwin(name, trigger = true) {
     if ($('.window.' + name).hasClass('max')) {
@@ -3404,12 +3431,26 @@ function hide_widgets() {
     $('#widgets-btn').removeClass('show');
     setTimeout(() => { $('#widgets').removeClass('show-begin'); }, 200);
 }
-
+const FLY_HIDDEN_LIST_KEY = 'control_status_fly_hidden_list'
 function controlStatus(name) {
     if (this.classList.contains('active')) {
         this.classList.remove('active');
         if (name == 'wifi') {
             wifiStatus = false;
+        }
+        if (name == 'fly') {
+            flyStatus = false
+            if (localStorage.getItem(FLY_HIDDEN_LIST_KEY)) {
+              const flyHiddenData = JSON.parse(localStorage.getItem(FLY_HIDDEN_LIST_KEY))
+              const flyHiddenList = Array.isArray(flyHiddenData) ? flyHiddenData : []
+              flyHiddenList.forEach(item => {
+                const dom = $(`#control .${item} .icon`)
+                if (!dom.hasClass('active')) {
+                  dom.addClass('active')
+                }
+              })
+              localStorage.removeItem(FLY_HIDDEN_LIST_KEY)
+            }
         }
     }
     else if (!this.classList.contains('active')) {
@@ -3417,6 +3458,22 @@ function controlStatus(name) {
         if (name == 'wifi') {
             wifiStatus = true;
         }
+        if (name == 'fly') {
+          flyStatus = true
+          const hiddenList = ['btn1', 'btn2', 'btn5']
+          const hiddenDiffList = []
+          hiddenList.forEach(item => {
+            const dom = $(`#control .${item} .icon`)
+            if (dom.hasClass('active')) {
+              dom.removeClass('active')
+              hiddenDiffList.push(item)
+            }
+          })
+          localStorage.setItem(FLY_HIDDEN_LIST_KEY, JSON.stringify(hiddenDiffList))
+        }
+    }
+    if (name == 'dark') {
+      toggletheme()
     }
 }
 // 控制面板 亮度调整
@@ -3497,6 +3554,8 @@ window.setInterval(() => {
 }, 1000);
 
 var wifiStatus = true;
+// 飞行模式
+var flyStatus = false;
 
 // 选择框
 let chstX, chstY;
@@ -3520,20 +3579,23 @@ window.addEventListener('mouseup', e => {
     $('#desktop>.choose').css('width', 0);
     $('#desktop>.choose').css('height', 0);
 })
-let isDrak = false;
+let isDark = false;
 
 // 主题
 function toggletheme() {
     $('.dock.theme').toggleClass('dk');
+    var darkControl = $(`#control .btn4 .icon`)
     $(':root').toggleClass('dark');
     if ($(':root').hasClass('dark')) {
         $('.window.whiteboard>.titbar>p').text('Blackboard');
         setData('theme', 'dark');
-        isDrak = true;
+        isDark = true;
+        darkControl.addClass('active')
     } else {
         $('.window.whiteboard>.titbar>p').text('Whiteboard');
         setData('theme', 'light');
-        isDrak = false;
+        isDark = false;
+        darkControl.removeClass('active')
     }
 }
 
@@ -3543,7 +3605,7 @@ if (isDarkTheme.matches) { //是深色
     $(':root').toggleClass('dark');
     $('.window.whiteboard>.titbar>p').text('Blackboard');
     localStorage.setItem('theme', 'dark');
-    isDrak = true;
+    isDark = true;
 } else { // 不是深色
     $('.window.whiteboard>.titbar>p').text('Whiteboard');
     localStorage.setItem('theme', 'light');
@@ -3775,15 +3837,18 @@ function setIcon() {
         if (/^(1|0)+$/.test(sys_setting_back.join(''))/* 只含有0和1 */) {
             sys_setting = sys_setting_back;
             for (var i = 0; i < sys_setting.length; i++) {
-                document.getElementById('sys_setting_' + (i + 1)).setAttribute("class", 'a checkbox' + (sys_setting[i] ? ' checked' : '')); //设置class属性
+                document.getElementById('sys_setting_' + (i + 1))?.setAttribute("class", 'a checkbox' + (sys_setting[i] ? ' checked' : '')); //设置class属性
                 if (i == 5) {
                     use_music = sys_setting[i] ? true : false;
+                }
+                if (i == 6) {
+                    use_mic_voice = sys_setting[i] ? true : false;
                 }
             }
         }
     }
     if (localStorage.getItem('root_class')) {
-        $(':root')[0].className = localStorage.getItem('root_class');
+        $(':root')[0].className = localStorage.getItem('root_class') + ' ' + (isDark ? 'dark' : '');
     }
 }
 
@@ -3851,6 +3916,7 @@ document.getElementsByTagName('body')[0].onload = function nupd() {
             }
         }
     })
+    document.querySelector('.rainbow-container-main').setAttribute('style', 'display:' + (use_mic_voice ? 'block' : 'none')+ ';');
     // loadlang();
 };
 
