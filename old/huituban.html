@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>绘画板</title>
+	<style>
+		canvas {
+			border: 2px solid black;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<label>线条宽度：</label>
+		<select id="lineWidthSelect">
+			<option value="1">1</option>
+			<option value="3">3</option>
+			<option value="5" selected>5</option>
+			<option value="7">7</option>
+			<option value="9">9</option>
+		</select>
+		<label>线条颜色：</label>
+		<input type="color" id="colorPicker" value="#000000">
+		<button id="resizeButton">更改大小</button>
+		<button id="clearButton">清空</button>
+		<a href="index.html">点击这里返回</a>
+	</div>
+	<canvas id="myCanvas" width="500" height="500"></canvas>
+	<script>
+		// 获取canvas元素
+		var canvas = document.getElementById("myCanvas");
+		// 获取绘画上下文
+		var ctx = canvas.getContext("2d");
+
+		// 获取控件元素
+		var lineWidthSelect = document.getElementById("lineWidthSelect");
+		var colorPicker = document.getElementById("colorPicker");
+		var resizeButton = document.getElementById("resizeButton");
+		var clearButton = document.getElementById("clearButton");
+
+		// 设置默认线条颜色和宽度
+		ctx.strokeStyle = colorPicker.value;
+		ctx.lineWidth = lineWidthSelect.value;
+
+		// 当控件值改变时更新线条颜色和宽度
+		lineWidthSelect.addEventListener("change", function(){
+			ctx.lineWidth = lineWidthSelect.value;
+		});
+		colorPicker.addEventListener("input", function(){
+			ctx.strokeStyle = colorPicker.value;
+		});
+
+		// 当按钮被点击时更改canvas元素大小
+		resizeButton.addEventListener("click", function(){
+			canvas.width = 800;
+			canvas.height = 1000;
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+		});
+
+		// 当按钮被点击时清空画布
+		clearButton.addEventListener("click", function(){
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+		});
+
+		// 当鼠标按下时开始绘制
+		canvas.addEventListener("mousedown", function(e){
+			// 获取鼠标位置
+			var x = e.clientX - canvas.offsetLeft;
+			var y = e.clientY - canvas.offsetTop;
+
+			// 开始路径
+			ctx.beginPath();
+			ctx.moveTo(x, y);
+
+			// 当鼠标移动时绘制
+			canvas.addEventListener("mousemove", draw);
+
+			// 当鼠标松开时停止绘制
+			canvas.addEventListener("mouseup", function(){
+				canvas.removeEventListener("mousemove", draw);
+			});
+		});
+
+		// 绘制函数
+		function draw(e){
+			var x = e.clientX - canvas.offsetLeft;
+			var y = e.clientY - canvas.offsetTop;
+
+			ctx.lineTo(x, y);
+			ctx.stroke();
+		}
+	</script>
+</body>
+</html>
