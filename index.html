@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客列表页</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/blog_list.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="nav">
+        <img class="animate__animated animate__bounce animate__faster animate__infinite infinite" src="image/head.png" alt="">
+        <span class="title">我的博客系统</span>
+        <!-- 使用 span 把左右两侧的元素给撑开 -->
+        <span class="spacer"></span>
+        <a href="index.html">主页</a>
+
+    </div>
+    <!-- 版心 -->
+    <div class="container">
+        <!-- 左侧区域，显示用户信息 -->
+        <div class="container-left">
+            <!-- 用户详情 -->
+            <div class="card">
+                <!-- 用户的头像 -->
+                <img class="animate__animated animate__bounce animate__faster animate__infinite infinite" src="image/head.png" alt="">
+                <!-- 用户名 -->
+                <h3>编程小白</h3>
+                <!-- 其它信息 -->
+                <a href="https://github.com/huchangzhi">GitHub 地址</a>
+                <a href="https://www.luogu.com.cn/user/1031975">洛谷地址</a>
+                <a href="https://huchangzhi.github.io/huituban.html">一个绘图板</a>
+                <a href="https://huchangzhi.github.io/jisuanqi/">一个计算器</a>
+                <a href="https://huchangzhi.github.io/4.html">一个神奇的按钮</a>
+                <a href="http://hcz.free.nf/2024/02/03/%e7%95%99%e8%a8%80%e6%9d%bf/">新留言板</a>
+                <a href="https://note.ms/huchangzhi">留言板</a>
+                <a href="https://note.ms/hczls" class="detail">我的副留言板</a>
+                <!-- <a href="/oi/index.html">oi wiki镜像站</a> -->
+                <a href="/old/index.html">返回老版本</a>
+                <a href="/win12/index.html">win12</a>
+                <a href="https://huchangzhi.github.io/draw-tree-tools">画树工具</a>
+                <!-- 文章分类
+                <div class="counter">
+                    <span>文章</span>
+
+                </div>
+                <div class="counter">
+                    <span>2</span>
+
+                </div> -->
+            </div>
+        </div>
+        <!-- 右侧区域，显示博客列表 -->
+        <div class="container-right">
+            <!-- 每个 blog 代表一篇博客 -->
+            <div class="blog">
+                <div class="title">公告</div>
+                <div class="date">2024-2</div>
+                <div class="desc">
+                    全新留言板上线， 不怕被删了， 记得留名字
+                </div> <a href="http://hcz.free.nf/2024/02/03/%e7%95%99%e8%a8%80%e6%9d%bf/" class="detail" >全新留言板&gt;&gt;</a>
+            </div>
+            <div class="blog">
+                <div class="title">公告</div>
+                <div class="date">2023-9</div>
+                <div class="desc">
+                    登陆系统上线
+                </div> <a href="https://hcz.neocities.org/dlxt/" class="detail" >我的登陆系统&gt;&gt;</a>
+            </div>
+            <div class="blog">
+                <div class="title">c++学习</div>
+                <div class="date">2023-</div>
+                <div class="desc">
+                    2023129 创建记录......
+                </div> <a href="9.html" class="detail">查看全文&gt;&gt;</a>
+            </div>
+            <div class="blog">
+                <div class="title">win12</div>
+                <div class="date">2023-8</div>
+                <div class="desc">
+                    2.12日更新了，点击下方按钮体验win12网页版， 版本windows12v7.4.2,重启后更新
+                </div> <a href="\win12\index.html" class="detail">win12网页版&gt;&gt;</a>
+            </div>
+            <div class="blog">
+                <div class="title">洛谷美化</div>
+                <div class="date">2023-8</div>
+                <div class="desc">
+                    洛谷的美化
+                </div> <a href="5.html" class="detail">查看全文&gt;&gt;</a>
+            </div>
+            <div class="blog">
+                <div class="title">windows常用快捷键</div>
+                <div class="date">2023-8-7</div>
+                <div class="desc">
+                    windows常用的快捷键
+                </div> <a href="7.html" class="detail">查看全文&gt;&gt;</a>
+            </div>
+            <div class="blog">
+                <div class="title">dev-cpp 6.7.5安装方法</div>
+                <div class="date">2023-8-4</div>
+                <div class="desc">
+                    安装方法
+                </div> <a href="1.html" class="detail">查看全文&gt;&gt;</a>
+            </div>
+            <div class="blog">
+                <div class="title">更新日志</div>
+                <div class="date">2023-8-7</div>
+                <div class="desc">
+                    更新日志
+                </div> <a href="2.html" class="detail">查看全文&gt;&gt;</a>
+            </div>
+            <div class="blog">
+                <div class="title">洛谷日志</div>
+                <div class="date">2023-8-14</div>
+                <div class="desc">
+                    洛谷日志
+                </div> <a href="3.html" class="detail">查看全文&gt;&gt;</a>
+            </div>
+            <div class="blog">
+                <div class="title">公告</div>
+                <div class="date">2023-8-23</div>
+                <div class="desc">
+                    我的博客副站建立
+                </div> <a href="https://huchangzhil.github.io" class="detail">我的副站&gt;&gt;</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
