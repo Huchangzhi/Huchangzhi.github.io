@@ -1,6 +1,6 @@
 window.requireConfig = {
     waitSeconds: 60,
-    baseUrl: "drawtree/static",
+    baseUrl: "/drawtree/static",
     urlArgs: "cachebust=" + JS_VERSION,
     // TODO: only do this in production, keep separation for dev
     map: {
