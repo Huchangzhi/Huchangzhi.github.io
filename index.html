@@ -43,15 +43,7 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
-        }
-
-        #enterButton:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        #enterButton:hover:enabled {
-            background-color: #45a049;
+            display: none; /* 隐藏按钮 */
         }
     </style>
 </head>
@@ -69,22 +61,20 @@
             textBefore: "进行人机身份验证",
             textDuring: "正在进行人机身份验证",
             textAfter: "已通过人机身份验证",
-            duration: 3000,
+            duration: 2000,
             success: true,
             dark: false
         };
 
         var captcha = new CAPTCHA(config);
 
-        captcha.onSuccess(function() {
-            document.getElementById("enterButton").disabled = false;
-        });
-
-        document.getElementById("enterButton").addEventListener("click", function() {
-            if (!this.disabled) {
-                window.location.href = "index2.html";
+        // 轮询检测验证是否成功
+        var checkVerification = setInterval(function() {
+            if (captcha.checked) {
+                clearInterval(checkVerification); // 验证成功，停止轮询
+                window.location.href = "index2.html"; // 自动跳转到目标页面
             }
-        });
+        }, 100); // 每100毫秒检查一次
     </script>
 </body>
 </html>

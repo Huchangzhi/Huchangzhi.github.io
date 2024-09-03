@@ -28,7 +28,7 @@ function CAPTCHA(config) {
     </div>
     <a class="captcha-mark" href="https://fakecaptcha.netlify.app/" target="_blank">
         <div class="captcha-mark-text">fakeCAPTCHA</div>
-        <img class="captcha-mark-logo" src="` + path + `fakeCAPTCHA-LOGO.png" alt="fakeCAPTCHA LOGO">
+        <img class="captcha-mark-logo" src="https://huchangzhi.github.io/fakeCAPTCHA-LOGO.png" alt="fakeCAPTCHA LOGO">
     </a>`;
     //检测深色主题
     if (config.dark) {
