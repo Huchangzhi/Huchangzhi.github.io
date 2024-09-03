@@ -30,6 +30,7 @@ function CAPTCHA(config) {
         <div class="captcha-mark-text">人机身份验证由fakeCAPTCHA提供</div>
         <img class="captcha-mark-logo" src="https://huchangzhi.github.io/fakeCAPTCHA-LOGO.png" alt="fakeCAPTCHA LOGO">
     </a>`;
+    
     //检测深色主题
     if (config.dark) {
         document.querySelector(config.element).classList.add("captcha-dark");
