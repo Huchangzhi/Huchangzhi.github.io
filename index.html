@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>验证码验证</title>
+    <title>编程小白的博客</title>
     <link rel="stylesheet" href="./fakeCAPTCHA/fakeCAPTCHA.css">
     <style>
         body {
@@ -49,19 +49,22 @@
 </head>
 <body>
     <div id="container">
-        <h1>请完成人机验证</h1>
+        <h1>请完成人机验证后进入编程小白的博客</h1>
         <div id="captcha"></div>
         <button id="enterButton" disabled>进入网站</button>
     </div>
 
     <script src="./fakeCAPTCHA/fakeCAPTCHA.js"></script>
     <script>
+        // 生成1500到2999之间的随机数
+        var randomDuration = Math.floor(Math.random() * (500 - 3500 + 1)) + 3500;
+
         var config = {
             element: "#captcha",
-            textBefore: "进行人机身份验证",
+            textBefore: "请点击进行人机身份验证",
             textDuring: "正在进行人机身份验证",
-            textAfter: "已通过人机身份验证",
-            duration: 2000,
+            textAfter: "已通过人机身份验证，正在跳转",
+            duration: randomDuration, // 使用随机的持续时间
             success: true,
             dark: false
         };
