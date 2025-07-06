@@ -1,9 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>Run WebAssembly</title>
+  <meta charset="UTF-8" />
+  <title>WebAssembly Wasm Module Runner</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #000;
+      color: #fff;
+    }
+    #canvas {
+      display: none;
+      margin: 20px auto;
+      background-color: black;
+    }
+    #loading {
+      display: block;
+      margin: 40px auto;
+    }
+  </style>
 </head>
 <body>
-    <script src="powderdev.js"></script> <!-- 引入你的 JS 文件 -->
+  <!-- 加载动画 -->
+  <img id="loading" src="loading.gif" alt="Loading..." />
+
+  <!-- Canvas 元素用于渲染 Wasm 内容 -->
+  <canvas id="canvas" width="800" height="600"></canvas>
+
+  <!-- 状态提示 -->
+  <p id="status" style="display: none;">Loading...</p>
+
+  <script>
+    // 设置 WebAssembly 模块名称
+    const moduleBaseName = 'powderdev';
+
+    // 动态加载 .js 胶水文件
+    function loadWasmScript() {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = `./${moduleBaseName}.js`; // 注意路径（可改为 ./wasm/powderdev.js）
+        script.onload = () => {
+          if (typeof window[`create_${moduleBaseName}`] === 'function') {
+            resolve(window[`create_${moduleBaseName}`]);
+          } else {
+            reject(new Error(`Failed to find 'create_${moduleBaseName}' in loaded script`));
+          }
+        };
+        script.onerror = () => {
+          reject(new Error('Failed to load Wasm script.'));
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    // 获取 DOM 元素
+    const canvas = document.getElementById('canvas');
+    const status = document.getElementById('status');
+    const loading = document.getElementById('loading');
+
+    // 标记内容可以显示
+    window.mark_presentable = function () {
+      loading.style.display = 'none';
+      canvas.style.display = 'block';
+    };
+
+    // 错误处理
+    window.onerror = (event) => {
+      status.innerText = '出现异常，请查看控制台输出。';
+      status.style.display = 'block';
+      return true; // 抑制浏览器默认错误提示
+    };
+
+    // 初始化 WebAssembly 模块
+    loadWasmScript().then(createModule => {
+      createModule({
+        canvas,
+        print: console.log,
+        printErr: console.error
+      });
+    }).catch(err => {
+      console.error(err);
+      status.innerText = '加载失败，请检查网络请求和路径。';
+      status.style.display = 'block';
+    });
+
+    // 监听 WebGL 上下文丢失
+    canvas.addEventListener("webglcontextlost", (e) => {
+      alert('WebGL 上下文丢失，请刷新页面。');
+      e.preventDefault();
+    }, false);
+  </script>
 </body>
 </html>
